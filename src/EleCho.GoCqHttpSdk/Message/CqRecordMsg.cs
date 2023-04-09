@@ -17,7 +17,7 @@ namespace EleCho.GoCqHttpSdk.Message
         /// <summary>
         /// 说明: 语音文件名
         /// </summary>
-        public Uri File { get; set; } = new Uri("file:///");
+        public string File { get; set; } = null;
 
         /// <summary>
         /// 说明: 发送时可选, 默认 0, 设置为 1 表示变声
@@ -28,7 +28,7 @@ namespace EleCho.GoCqHttpSdk.Message
         /// <summary>
         /// 说明: 语音 URL
         /// </summary>
-        public string? Url { get; set; } = null;
+        public string Url { get; set; } = null;
 
         /// <summary>
         /// 说明: 只在通过网络 URL 发送时有效, 表示是否使用已缓存的文件, 默认 1
@@ -54,9 +54,14 @@ namespace EleCho.GoCqHttpSdk.Message
         /// 创建语音消息
         /// </summary>
         /// <param name="file">语音消息文件 (网络或本地)</param>
-        public CqRecordMsg(Uri file) => File = file;
+        /// <param name="url">语音消息文件 (网络或本地)</param>
+        public CqRecordMsg(string file, string url)
+        {
+            File = file;
+            Url = url;
+        }
 
-        internal override CqMsgDataModel? GetDataModel() => new CqRecordMsgDataModel(File.ToString(), Magic.ToInt(), Url, Cache.ToInt(), Proxy.ToInt(), Timeout);
+        internal override CqMsgDataModel? GetDataModel() => new CqRecordMsgDataModel(File, Magic.ToInt(), Url, Cache.ToInt(), Proxy.ToInt(), Timeout);
 
         internal override void ReadDataModel(CqMsgDataModel? model)
         {
@@ -64,7 +69,7 @@ namespace EleCho.GoCqHttpSdk.Message
             if (m == null)
                 throw new ArgumentException();
 
-            File = new Uri(m.file);
+            File = m.file;
             Magic = m.magic.ToBool();
             Url = m.url;
             Cache = m.cache.ToBool();

@@ -327,8 +327,13 @@ namespace EleCho.GoCqHttpSdk
             // 当 mainLoopTask 被赋值的时候, mainPostLoopTask 也会被赋值, 所以第二个条件基本不会执行
             if (mainLoopTask == null || mainPostLoopTask == null)
                 throw new InvalidOperationException("Session is not started yet");
-
-            await Task.WhenAll(mainLoopTask, mainPostLoopTask);
+            try
+            {
+                await Task.WhenAll(mainLoopTask, mainPostLoopTask);
+            }catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
         }
 
         /// <summary>
